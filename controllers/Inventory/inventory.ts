@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Inventory from "../../models/inventory";
-import InventoryLog from "../../models/inventoryLog";
 
 export const addItems = async (req: Request, res: Response) => {
   try {

@@ -58,10 +58,10 @@ StudentLeave.init(
     advisorCode: {
       type: DataTypes.STRING,
       allowNull: false,
-      references: {
-        model: "Faculties",
-        key: "facultyId",
-      },
+      // references: {
+      //   model: "Faculties",
+      //   key: "facultyId",
+      // },
     },
     // status: {
     //     type: DataTypes.INTEGER,

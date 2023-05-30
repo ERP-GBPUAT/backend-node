@@ -9,6 +9,7 @@ class Faculty extends Model<InferAttributes<Faculty>, InferCreationAttributes<Fa
   declare department: string;
   declare designation: string;
   declare qualification: string;
+  declare researchInterests: string;
   declare wardenOfHostel: string;
   declare hodOfDepartment: string;
   declare deanOfCollege: boolean;
@@ -34,6 +35,10 @@ Faculty.init(
     qualification: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    researchInterests: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     wardenOfHostel: {
       type: DataTypes.STRING,
