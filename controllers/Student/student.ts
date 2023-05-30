@@ -50,12 +50,21 @@ export const addStudent = async (req: Request, res: Response) => {
 
 export const getStudent = async (req: Request, res: Response) => {
   try {
-    const studentId: string = req.params.studentId;
-    // const isStudent = res.locals.user.user.isStudent;
-    // const isFaculty = res.locals.user.user.isFaculty;
-    // if (isStudent === true) {
-    //   if (studentId === res.locals.user.student.id)
-    // }
+    let studentId = req.params.studentId;
+    const isStudent = res.locals.user.user.isStudent;
+    const isFaculty = res.locals.user.user.isFaculty;
+    if (isStudent === true) {
+      if (!studentId) {
+        studentId = res.locals.user.student.id
+      }
+      if (studentId !== res.locals.user.student.id){
+        return res.status(400).json({
+          msg: "failure",
+          data: null,
+          error: "access denied"
+        })
+      }
+    }
     let student = await Student.findOne({
       include: User,
       where: { id: studentId },
@@ -66,6 +75,15 @@ export const getStudent = async (req: Request, res: Response) => {
         data: null,
         error: "student not found",
       });
+    }
+    if (isFaculty === true) {
+      if (res.locals.user.faculty.id !== student.FacultyId) {
+        return res.status(400).json({
+          msg: "failure",
+          data: null,
+          error: "access denied"
+        })
+      }
     }
     return res.status(200).json({
       msg: "success",
@@ -85,7 +103,7 @@ export const getStudentsByBatch = async (req: Request, res: Response) => {
   const batch = req.params.year;
   try {
     let student = await Student.findOne({
-      include: User,
+      // include: User,
       where: { batch: batch },
     });
     if (!student) {
@@ -109,31 +127,45 @@ export const getStudentsByBatch = async (req: Request, res: Response) => {
   }
 };
 
-export const updateStudent = async (req: Request, res: Response) => {
-  try {
-    let student = req.body;
-    const studentId = student.id;
-    delete student["id"];
-    await Student.update(student, {
-      where: { id: studentId },
-    });
-    return res.status(200).json({
-      msg: "success",
-      data: null,
-      error: null,
-    });
-  } catch (e) {
-    return res.status(500).json({
-      msg: "failure",
-      data: null,
-      error: e,
-    });
-  }
-};
+// export const updateStudent = async (req: Request, res: Response) => {
+//   try {
+//     let student = req.body;
+//     const studentId = student.id;
+//     delete student["id"];
+//     await Student.update(student, {
+//       where: { id: studentId },
+//     });
+//     return res.status(200).json({
+//       msg: "success",
+//       data: null,
+//       error: null,
+//     });
+//   } catch (e) {
+//     return res.status(500).json({
+//       msg: "failure",
+//       data: null,
+//       error: e,
+//     });
+//   }
+// };
 
 export const getAdvisees = async (req: Request, res: Response) => {
-  const advisorCode = req.params.advisorCode;
   try {
+    if (!res.locals.user.user.isFaculty) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied"
+      })
+    }
+    if (!res.locals.user.faculty.isAdvisor) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied"
+      })
+    }
+    const advisorCode = res.locals.user.faculty.id;
     let students = await Student.findAll({
       include: User,
       where: {

@@ -5,7 +5,6 @@ import StudentLeave from "./studentLeave";
 import FacultyLeave from "./facultyLeave";
 import Research from "./facultyResearch";
 import Inventory from "./inventory";
-import sequelize from "sequelize";
 import { Semester,Course } from "./semester";
 import Subject from "./subject";
 
