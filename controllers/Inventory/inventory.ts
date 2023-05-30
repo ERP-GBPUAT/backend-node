@@ -103,22 +103,17 @@ export const deleteItem = async (req: Request, res: Response) => {
 export const updateItem = async (req: Request, res: Response) => {
   try {
     let { serialNo, ...itemData } = req.body;
-    let item = await Inventory.findOne({
-      where: {
-        serialNo,
-      },
-    });
-    if (!item) {
-      return res.status(404).json({
-        msg: "failure",
-        data: null,
-        error: "item not found",
-      });
+    if (itemData.damaged) {
+      if (itemData.damaged === true) {
+        itemData = { damageDate: new Date() }
+      } else {
+        itemData = { repairDate: new Date() }
+      }
     }
-    await Inventory.update(itemData, { where: { serialNo } });
+    let success = await Inventory.update(itemData, { where: { serialNo } });
     return res.status(200).json({
       msg: "success",
-      data: null,
+      data: success,
       error: null,
     });
   } catch (e) {
@@ -133,6 +128,13 @@ export const updateItem = async (req: Request, res: Response) => {
 export const updateMultipleItems = async (req: Request, res: Response) => {
   try {
     let { oldName, oldBrand, ...itemData } = req.body
+    if (itemData.damaged) {
+      if (itemData.damaged === true) {
+        itemData = { damageDate: new Date() }
+      } else {
+        itemData = { repairDate: new Date() }
+      }
+    }
     let affectedCount = await Inventory.update(itemData, {
       where: {
         name: oldName,

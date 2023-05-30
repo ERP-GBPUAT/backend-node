@@ -24,6 +24,8 @@ class Inventory extends Model<
   declare description: string;
   declare image: Express.Multer.File | undefined;
   declare dateOfPurchase: Date;
+  declare lastDamageDate: Date;
+  declare lastRepairDate: Date;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -74,6 +76,12 @@ Inventory.init(
     dateOfPurchase: {
       type: DataTypes.DATE,
       allowNull: false
+    },
+    lastDamageDate: {
+      type: DataTypes.DATE,
+    },
+    lastRepairDate: {
+      type: DataTypes.DATE,
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
