@@ -130,6 +130,29 @@ export const updateItem = async (req: Request, res: Response) => {
   }
 };
 
+export const updateMultipleItems = async (req: Request, res: Response) => {
+  try {
+    let { oldName, oldBrand, ...itemData } = req.body
+    let affectedCount = await Inventory.update(itemData, {
+      where: {
+        name: oldName,
+        brand: oldBrand
+      }
+    })
+    return res.status(200).json({
+      msg: "success",
+      data: affectedCount,
+      error: null
+    })
+  } catch (e) {
+    return res.status(500).json({
+      msg: "failure",
+      data: null,
+      error: e,
+    });
+  }
+}
+
 export const getItemsByFilter = async (req: Request, res: Response) => {
   try {
     let items = await Inventory.findAll({ where: req.body });
