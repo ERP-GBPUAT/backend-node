@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
 const authentication = async(req:Request, res:Response,next:NextFunction)=>{
     const token = req.header('token');
+    // console.log(token);
+    
     if(!token){
         return res.status(401).json({error:"Access Denied"})
     }

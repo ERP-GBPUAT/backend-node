@@ -46,7 +46,7 @@ export const getFacultyResearch = async (req: Request, res: Response) => {
       }
     });
     return res.status(200).json({
-      msg: "succes",
+      msg: "success",
       data: researches,
       error: null,
     });
@@ -83,8 +83,8 @@ export const getResearch = async (req: Request, res: Response) => {
     const researchId = req.body.researchId;
     const research = await Research.findOne({
       where: {
-        id: researchId
-      }
+        id: researchId,
+      },include:[{model:Faculty,include:[{model:User}]}]
     })
     return res.status(200).json({
       msg: "success",
@@ -92,6 +92,8 @@ export const getResearch = async (req: Request, res: Response) => {
       error: null,
     });
   } catch (e) {
+    console.log(e);
+    
     return res.status(500).json({
       msg: "failed",
       data: null,
