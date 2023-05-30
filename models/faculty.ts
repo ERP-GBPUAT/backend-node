@@ -13,6 +13,7 @@ class Faculty extends Model<InferAttributes<Faculty>, InferCreationAttributes<Fa
   declare wardenOfHostel: string;
   declare hodOfDepartment: string;
   declare deanOfCollege: boolean;
+  declare bioWebLink:string;
   declare UserId: ForeignKey<User["id"]>;
   declare semesters:NonAttribute<Semester[]>;
 }
@@ -42,6 +43,10 @@ Faculty.init(
     },
     wardenOfHostel: {
       type: DataTypes.STRING,
+    },
+    bioWebLink:{
+      type:DataTypes.STRING,
+      allowNull:false
     },
     hodOfDepartment: {
       type: DataTypes.STRING,
