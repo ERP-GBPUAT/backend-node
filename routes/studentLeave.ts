@@ -7,20 +7,17 @@ import {
     getHostelLeaves,
     advisorApproval,
     wardenApproval,
-    advisorRejection,
-    wardenRejection
 } from '../controllers/StudentLeave/studentLeave';
+import authentication from "../middleware/authentication"
 
 const router = express.Router();
 const upload = multer({ dest: "./uploads/" });
 
-router.post('/applyLeave', upload.single('file'), applyLeave);
-router.get('/getStudentLeaves/:studentId', getStudentLeaves)
-router.get('/getAdviseesLeaves/:advisorCode', getAdviseesLeaves)
-router.get('/getHostelLeaves/:hostel', getHostelLeaves)
-router.patch('/advisorApproval/:id', advisorApproval)
-router.patch('/wardenApproval/:id', wardenApproval)
-router.patch('/advisorRejection/:id', advisorRejection)
-router.patch('/wardenRejection/:id', wardenRejection)
+router.post('/applyLeave', authentication, upload.single('file'), applyLeave);
+router.get('/getStudentLeaves', authentication, getStudentLeaves)
+router.get('/getAdviseesLeaves', authentication, getAdviseesLeaves)
+router.get('/getHostelLeaves', authentication, getHostelLeaves)
+router.patch('/advisorApproval', authentication, advisorApproval)
+router.patch('/wardenApproval', authentication, wardenApproval)
 
 export default router

@@ -1,8 +1,9 @@
-import { Model, DataTypes, ForeignKey, NonAttribute } from "sequelize";
+import { Model, DataTypes, ForeignKey, NonAttribute, HasManyGetAssociationsMixin } from "sequelize";
 import sequelize from "./indexModel";
 import Faculty from "./faculty"
 import User from "./user"
 import { Semester } from "./semester";
+import StudentLeave from "./studentLeave";
 
 class Student extends Model {
   declare id: number;
@@ -19,6 +20,7 @@ class Student extends Model {
   declare FacultyId: ForeignKey<Faculty["id"]>;
   declare UserId: ForeignKey<User["id"]>;
   declare Semester:NonAttribute<Semester[]>;
+  declare getLeaves: HasManyGetAssociationsMixin<StudentLeave>;
   // declare User: NonAttribute<User>;
   // declare Faculty: NonAttribute<Faculty>;
 }

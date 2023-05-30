@@ -1,132 +1,141 @@
 import Student from "../../models/student";
-import Faculty from "../../models/faculty";
-import User from "../../models/user";
-// import bcrypt from "bcrypt"
-// import jwt from "jsonwebtoken"
 import { validationResult } from "express-validator";
 import { Request, Response } from "express";
 import StudentLeave from "../../models/studentLeave";
-// import authentication from "../../middleware/authentication";
-export const applyLeave = async (req: Request, res: Response) => {
-  const studentId = req.body.id;
-  const { startDate, endDate, workingDays, reason, placeOfStay } = req.body;
-  const { advisorApproval, wardenApproval } = req.body;
-  let file = req.file;
 
-  let student = await Student.findOne({
-    // where: { email: res.locals.user.email }
-    where: { id: studentId },
-    // include: [{ model: Faculty}, {model: User}],
-  });
-  if (!student) {
-    // return res.status(400).json({ success: false, error: "Login First" })
-    return res.status(404).json({ msg: "student not found" });
-  }
+export const applyLeave = async (req: Request, res: Response) => {
   try {
-    const err = validationResult(req);
-    if (!err.isEmpty()) {
-      return res.status(400).json({ success: false, errors: err.array() });
+    if (!res.locals.user.user.isStudent) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied",
+      });
+    }
+    const studentId = res.locals.user.student.id;
+    const leaveData = req.body;
+    let file = req.file;
+
+    let student = await Student.findOne({
+      where: { id: studentId },
+      // include: [{ model: Faculty}, {model: User}],
+    });
+    if (!student) {
+      // return res.status(400).json({ success: false, error: "Login First" })
+      return res.status(404).json({
+        msg: "failure",
+        data: null,
+        error: "student does not exist. Something wrong must have happened",
+      });
     }
     let leave = await StudentLeave.create({
+      ...leaveData,
       StudentId: studentId,
-      startDate,
-      endDate,
-      workingDays,
-      reason,
-      placeOfStay,
-      // status,
-      advisorApproval,
-      wardenApproval,
       advisorCode: student.FacultyId,
       fileDocument: file,
     });
-    return res.status(200).json({ leaves: leave });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, error: "Internal Server Error" });
+    return res.status(200).json({ msg: "success", data: leave, error: null });
+  } catch (e) {
+    return res.status(500).json({ msg: "failure", data: null, error: e });
   }
 };
 
 // Get All Leaves Details of One Student using college id for student
 export const getStudentLeaves = async (req: Request, res: Response) => {
-  let studentId = req.params.studentId;
-  let student = await Student.findOne({
-    // where: { email: res.locals.user.email },
-    where: { id: studentId },
-  });
-  if (!student) {
-    return res.status(404).json({ msg: "student not found" });
-    // return res
-    //   .status(400)
-    //   .json({ success: false, error: "Login First/For Student only" });
-  }
   try {
-    const leave = await StudentLeave.findAll({
+    if (!res.locals.user.user.isStudent) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied",
+      });
+    }
+    const studentId = res.locals.user.student.id;
+    let student = await Student.findOne({
       where: { id: studentId },
     });
-    res.status(200).json(leave);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal server error" });
+    if (!student) {
+      return res.status(404).json({
+        msg: "failure",
+        data: null,
+        error: "student does not exist. Something wrong must have happened",
+      });
+    }
+    const leaves = await student.getLeaves();
+    return res.status(200).json({
+      msg: "success",
+      data: leaves,
+      error: null,
+    });
+  } catch (e) {
+    return res.status(500).json({ msg: "failure", data: null, error: e });
   }
 };
 
 // Get All Leaves Details of One Student using Advisor Code for advisor
-
 export const getAdviseesLeaves = async (req: Request, res: Response) => {
-  let advisorCode = req.params.advisorCode;
-  // let faculty = await Faculty.findOne({
-  //   where: { email: res.locals.user.email },
-  // });
-  // if (!faculty) {
-  //   return res
-  //     .status(400)
-  //     .json({ success: false, error: "Login First/For Advisor only" });
-  // }
   try {
-    const leave = await StudentLeave.findAll({
+    if (!res.locals.user.user.isFaculty) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied",
+      });
+    }
+    if (!res.locals.user.faculty.isAdvisor) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied",
+      });
+    }
+    const leaves = await StudentLeave.findAll({
       where: {
-        advisorCode: advisorCode,
+        advisorCode: res.locals.user.faculty.id,
       },
     });
-    // if(!leaves){
-    //     return res.status(401).json({error:"Invalid credentials"});
-    // }
-    res.status(200).json(leave);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(200).json({
+      msg: "success",
+      data: leaves,
+      error: null,
+    });
+  } catch (e) {
+    return res.status(500).json({ msg: "failure", data: null, error: e });
   }
 };
 
 // Get All Leaves Details of One Student using college id for student and warden
-
 export const getHostelLeaves = async (req: Request, res: Response) => {
-  let hostel = req.params.hostel;
-  // let warden = await Faculty.findOne({
-  //   where: { email: res.locals.user.email },
-  // });
-  // if (!warden) {
-  //   return res.status(400).json({
-  //     success: false,
-  //     error: "Login First/For Student & Warden only",
-  //   });
-  // }
   try {
+    if (!res.locals.user.user.isFaculty) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied",
+      });
+    }
+    if (!res.locals.user.faculty.wardenOfHostel) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied",
+      });
+    }
     const leaves = await StudentLeave.findAll({
-      include: [{
-        model: Student,
-        where: { hostel }
-      }]
+      include: [
+        {
+          model: Student,
+          where: { hostel: res.locals.user.faculty.wardenOfHostel },
+        },
+      ],
     });
-    // if(!leaves){
-    //     return res.status(401).json({error:"Invalid credentials"});
-    // }
-    res.status(200).json(leaves);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(200).json({
+      msg: "success",
+      data: leaves,
+      error: null,
+    });
+  } catch (e) {
+    return res.status(500).json({ msg: "failure", data: null, error: e });
   }
 };
 
@@ -135,98 +144,39 @@ export const getHostelLeaves = async (req: Request, res: Response) => {
 //   "/advisorApproval/:id",
 //   authentication,
 export const advisorApproval = async (req: Request, res: Response) => {
-  let id = req.params.id;
-  // let advisor = await Faculty.findOne({
-  //   where: { email: res.locals.user.email },
-  // });
-  // if (!advisor) {
-  //   return res.status(400).json({ success: false, error: "Login First" });
-  // }
   try {
-    const err = validationResult(req);
-    if (!err.isEmpty()) {
-      return res.status(400).json({ success: false, errors: err.array() });
+    const { leaveId, advisorApproval } = req.body;
+    if (!res.locals.user.user.isFaculty) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied",
+      });
     }
-    // const leave = await StudentLeave.findOne({
-    //   where: {
-    //     id: id,
-    //   },
-    // });
-    await StudentLeave.update(
+    if (!res.locals.user.faculty.isAdvisor) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied",
+      });
+    }
+    let success = await StudentLeave.update(
       {
-        advisorApproval: true,
+        advisorApproval,
       },
       {
         where: {
-          id: id,
+          id: leaveId,
         },
       }
     );
-    let leave = await StudentLeave.findOne({
-      where: {
-        id: id,
-      },
+    return res.status(200).json({
+      msg: "success",
+      data: success,
+      error: null,
     });
-    // if(!leaves){
-    //     return res.status(401).json({error:"Invalid credentials"});
-    // }
-    return res.status(200).json({ leave: leave });
-  } catch (error) {
-    console.log(error);
-    // console.log(user)
-    return res
-      .status(500)
-      .json({ success: false, error: "Internal Server Error" });
-  }
-};
-
-// FOR ADVISOR
-// router.get(
-//   "/advisorRejection/:id",
-//   authentication,
-export const advisorRejection = async (req: Request, res: Response) => {
-  let id = req.params.id;
-  // let advisor = await Faculty.findOne({
-  //   where: { email: res.locals.user.email },
-  // });
-  // if (!advisor) {
-  //   return res.status(400).json({ success: false, error: "Login First" });
-  // }
-  try {
-    const err = validationResult(req);
-    if (!err.isEmpty()) {
-      return res.status(400).json({ success: false, errors: err.array() });
-    }
-    // const leave = await StudentLeave.findOne({
-    //   where: {
-    //     id: id,
-    //   },
-    // });
-    await StudentLeave.update(
-      {
-        advisorApproval: false,
-      },
-      {
-        where: {
-          id: id,
-        },
-      }
-    );
-    let leave = await StudentLeave.findOne({
-      where: {
-        id: id,
-      },
-    });
-    // if(!leaves){
-    //     return res.status(401).json({error:"Invalid credentials"});
-    // }
-    return res.status(200).json({ leave: leave });
-  } catch (error) {
-    console.log(error);
-    // console.log(user)
-    return res
-      .status(500)
-      .json({ success: false, error: "Internal Server Error" });
+  } catch (e) {
+    return res.status(500).json({ msg: "failure", data: null, error: e });
   }
 };
 
@@ -235,98 +185,38 @@ export const advisorRejection = async (req: Request, res: Response) => {
 //   "/wardenApproval/:id",
 //   authentication,
 export const wardenApproval = async (req: Request, res: Response) => {
-  let id = req.params.id;
-  // let warden = await Faculty.findOne({
-  //   where: { email: res.locals.user.email },
-  // });
-  // if (!warden) {
-  //   return res.status(400).json({ success: false, error: "Login First" });
-  // }
   try {
-    const err = validationResult(req);
-    if (!err.isEmpty()) {
-      return res.status(400).json({ success: false, errors: err.array() });
+    const { leaveId, wardenApproval } = req.body;
+    if (!res.locals.user.user.isFaculty) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied",
+      });
     }
-    // const leave = await StudentLeave.findOne({
-    //   where: {
-    //     id: id,
-    //   },
-    // });
-    await StudentLeave.update(
+    if (!res.locals.user.faculty.wardenOfHostel) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied",
+      });
+    }
+    let success = await StudentLeave.update(
       {
-        wardenApproval: true,
+        wardenApproval
       },
       {
         where: {
-          id: id,
+          id: leaveId
         },
       }
     );
-    // if(!leaves){
-    //     return res.status(401).json({error:"Invalid credentials"});
-    // }
-    let leave = await StudentLeave.findOne({
-      where: {
-        id: id,
-      },
+    return res.status(200).json({
+      msg: "success",
+      data: success,
+      error: null,
     });
-    return res.status(200).json({ leave: leave });
-  } catch (error) {
-    // console.log(error);
-    // console.log(user)
-    return res
-      .status(500)
-      .json({ success: false, error: "Internal Server Error" });
+  } catch (e) {
+    return res.status(500).json({ msg: "failure", data: null, error: e });
   }
 };
-
-// FOR Warden Rejection
-// router.get(
-//   "/wardenRejection/:id",
-//   authentication,
-export const wardenRejection = async (req: Request, res: Response) => {
-  let id = req.params.id;
-  // let warden = await Faculty.findOne({
-  //   where: { email: res.locals.user.email },
-  // });
-  // if (!warden) {
-  //   return res.status(400).json({ success: false, error: "Login First" });
-  // }
-  try {
-    const err = validationResult(req);
-    if (!err.isEmpty()) {
-      return res.status(400).json({ success: false, errors: err.array() });
-    }
-    // const leave = await StudentLeave.findOne({
-    //   where: {
-    //     id: id,
-    //   },
-    // });
-    await StudentLeave.update(
-      {
-        wardenApproval: false,
-      },
-      {
-        where: {
-          id: id,
-        },
-      }
-    );
-    let leave = await StudentLeave.findOne({
-      where: {
-        id: id,
-      },
-    });
-    // if(!leaves){
-    //     return res.status(401).json({error:"Invalid credentials"});
-    // }
-    return res.status(200).json({ leave: leave });
-  } catch (error) {
-    console.log(error);
-    // console.log(user)
-    return res
-      .status(500)
-      .json({ success: false, error: "Internal Server Error" });
-  }
-};
-

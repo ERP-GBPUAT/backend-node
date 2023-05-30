@@ -6,7 +6,12 @@ export const addItems = async (req: Request, res: Response) => {
     const { quantity, itemData } = req.body;
     let file = req.file;
     const dept = "IT";
-    let count = 0;
+    let count = await Inventory.count({
+      where: {
+        name: itemData.name,
+        brand: itemData.brand,
+      },
+    });
     let promiseArr = [];
     for (let i = 0; i < quantity; i++) {
       count++;
@@ -124,6 +129,29 @@ export const updateItem = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const updateMultipleItems = async (req: Request, res: Response) => {
+  try {
+    let { oldName, oldBrand, ...itemData } = req.body
+    let affectedCount = await Inventory.update(itemData, {
+      where: {
+        name: oldName,
+        brand: oldBrand
+      }
+    })
+    return res.status(200).json({
+      msg: "success",
+      data: affectedCount,
+      error: null
+    })
+  } catch (e) {
+    return res.status(500).json({
+      msg: "failure",
+      data: null,
+      error: e,
+    });
+  }
+}
 
 export const getItemsByFilter = async (req: Request, res: Response) => {
   try {
