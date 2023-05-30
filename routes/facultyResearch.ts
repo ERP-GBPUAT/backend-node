@@ -6,6 +6,6 @@ const router = express.Router();
 router.post('/addResearch',authentication, addResearch)
 router.get('/getFacultyResearch/:facultyId', getFacultyResearch)
 router.get('/getAllResearch', getAllResearch)
-router.get('/getResearch', getResearch)
+router.post('/getResearch', getResearch)
 
 export default router
