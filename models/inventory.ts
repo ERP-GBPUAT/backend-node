@@ -21,6 +21,7 @@ class Inventory extends Model<
   declare category: CreationOptional<string>;
   declare damaged: boolean;
   declare damageDescription: string;
+  declare repairDescription: string;
   declare description: string;
   declare image: Express.Multer.File | undefined;
   declare dateOfPurchase: Date;
@@ -71,6 +72,9 @@ Inventory.init(
       defaultValue: false
     },
     damageDescription: {
+      type: DataTypes.TEXT,
+    },
+    repairDescription: {
       type: DataTypes.TEXT,
     },
     dateOfPurchase: {
