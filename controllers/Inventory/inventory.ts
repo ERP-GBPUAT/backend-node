@@ -6,7 +6,12 @@ export const addItems = async (req: Request, res: Response) => {
     const { quantity, itemData } = req.body;
     let file = req.file;
     const dept = "IT";
-    let count = 0;
+    let count = await Inventory.count({
+      where: {
+        name: itemData.name,
+        brand: itemData.brand,
+      },
+    });
     let promiseArr = [];
     for (let i = 0; i < quantity; i++) {
       count++;
