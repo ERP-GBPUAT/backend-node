@@ -103,7 +103,7 @@ export const deleteItem = async (req: Request, res: Response) => {
 export const updateItem = async (req: Request, res: Response) => {
   try {
     let { serialNo, ...itemData } = req.body;
-    if (itemData.damaged) {
+    if (itemData.damaged !== undefined) {
       if (itemData.damaged === true) {
         itemData = { lastDamageDate: new Date(), ...itemData }
       } else {
