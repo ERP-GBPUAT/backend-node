@@ -105,9 +105,9 @@ export const updateItem = async (req: Request, res: Response) => {
     let { serialNo, ...itemData } = req.body;
     if (itemData.damaged) {
       if (itemData.damaged === true) {
-        itemData = { damageDate: new Date(), ...itemData }
+        itemData = { lastDamageDate: new Date(), ...itemData }
       } else {
-        itemData = { repairDate: new Date(), ...itemData }
+        itemData = { lastRepairDate: new Date(), ...itemData }
       }
     }
     let success = await Inventory.update(itemData, { where: { serialNo } });
