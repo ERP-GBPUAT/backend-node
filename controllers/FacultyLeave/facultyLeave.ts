@@ -71,8 +71,8 @@ export const getLeavesByDept = async (req: Request, res: Response) => {
           model: Faculty,
           where:{
             department,
-            hodOfDepartment: {
-              [Op.ne]: department
+            id: {
+              [Op.ne]: res.locals.user.faculty.id
             }
           }
         },

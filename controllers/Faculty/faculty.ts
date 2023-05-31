@@ -118,8 +118,8 @@ export const getFacultyByDept = async (req: Request, res: Response) => {
     const faculties = await Faculty.findAll({
       where: {
         department: hodOfDept,
-        hodOfDepartment: {
-          [Op.ne]: hodOfDept
+        id: {
+          [Op.ne]: res.locals.user.faculty.id
         },
       },
     });
