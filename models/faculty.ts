@@ -1,10 +1,21 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from "sequelize";
+import {
+  Model,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  ForeignKey,
+  NonAttribute,
+} from "sequelize";
 
 import sequelize from "./indexModel";
-import User from "../models/user"
+import User from "../models/user";
 import { Semester } from "./semester";
 
-class Faculty extends Model<InferAttributes<Faculty>, InferCreationAttributes<Faculty>> {
+class Faculty extends Model<
+  InferAttributes<Faculty>,
+  InferCreationAttributes<Faculty>
+> {
   declare id: string;
   declare department: string;
   declare designation: string;
@@ -13,9 +24,10 @@ class Faculty extends Model<InferAttributes<Faculty>, InferCreationAttributes<Fa
   declare wardenOfHostel: string;
   declare hodOfDepartment: string;
   declare deanOfCollege: boolean;
-  declare bioWebLink:string;
+  declare bioWebLink: string;
+  declare isAdvisor: boolean;
   declare UserId: ForeignKey<User["id"]>;
-  declare semesters:NonAttribute<Semester[]>;
+  declare semesters: NonAttribute<Semester[]>;
 }
 
 Faculty.init(
@@ -39,21 +51,25 @@ Faculty.init(
     },
     researchInterests: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     wardenOfHostel: {
       type: DataTypes.STRING,
     },
-    bioWebLink:{
-      type:DataTypes.STRING,
-      allowNull:false
+    bioWebLink: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    isAdvisor: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
     hodOfDepartment: {
       type: DataTypes.STRING,
     },
     deanOfCollege: {
       type: DataTypes.STRING,
-    }
+    },
   },
   { sequelize }
 );
