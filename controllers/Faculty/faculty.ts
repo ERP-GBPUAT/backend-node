@@ -3,6 +3,7 @@ import Faculty from "../../models/faculty";
 import User from "../../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Op } from "sequelize";
 
 export const addFacultyDetails = async (
   req: Request,
@@ -101,12 +102,14 @@ export const getAllFaculty = async (req: Request, res: Response) => {
 
 export const getFacultyByDept = async (req: Request, res: Response) => {
   try {
-    if (!res.locals.user.isFaculty) return res.status(400).json({
+    if (!res.locals.user.user.isFaculty) return res.status(400).json({
       msg: "failure",
       data: null,
       error: "access denied"
     })
-    const hodOfDept = res.locals.user.faculty.hodOfDepartment
+    const hodOfDept = res.locals.user?.faculty?.hodOfDepartment
+    console.log(hodOfDept);
+    
     if (!hodOfDept) return res.status(400).json({
       msg: "failure",
       data: null,
@@ -114,7 +117,8 @@ export const getFacultyByDept = async (req: Request, res: Response) => {
     })
     const faculties = await Faculty.findAll({
       where: {
-        department: hodOfDept
+        department: hodOfDept,
+        id: { [Op.ne]: res.locals.user.faculty.id }
       }
     })
     return res.status(200).json({
