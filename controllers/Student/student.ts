@@ -151,25 +151,27 @@ export const getStudentsByBatch = async (req: Request, res: Response) => {
 
 export const getAdvisees = async (req: Request, res: Response) => {
   try {
-    if (!res.locals.user.user.isFaculty) {
-      return res.status(400).json({
-        msg: "failure",
-        data: null,
-        error: "access denied"
-      })
-    }
-    if (!res.locals.user.faculty.isAdvisor) {
-      return res.status(400).json({
-        msg: "failure",
-        data: null,
-        error: "access denied"
-      })
-    }
-    const advisorCode = res.locals.user.faculty.id;
+    // if (!res.locals.user.user.isFaculty) {
+    //   return res.status(400).json({
+    //     msg: "failure",
+    //     data: null,
+    //     error: "access denied"
+    //   })
+    // }
+    // if (!res.locals.user.faculty.isAdvisor) {
+    //   return res.status(400).json({
+    //     msg: "failure",
+    //     data: null,
+    //     error: "access denied"
+    //   })
+    // }
+    let facultyId
+    if (res.locals.user.user.isFaculty) facultyId = res.locals.user.faculty.id
+    else if (res.locals.user.isStudent) facultyId = res.locals.user.student.FacultyId
     let students = await Student.findAll({
       include: User,
       where: {
-        FacultyId: advisorCode,
+        FacultyId: facultyId,
       },
     });
     return res.status(200).json({

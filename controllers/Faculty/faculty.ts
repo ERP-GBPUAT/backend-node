@@ -4,7 +4,10 @@ import User from "../../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export const addFacultyDetails=async(req:Request, res:Response):Promise<Response>=>{
+export const addFacultyDetails = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     const data = req.body;
     let user = await User.findOne({
@@ -19,11 +22,11 @@ export const addFacultyDetails=async(req:Request, res:Response):Promise<Response
     }
     data.user.password = bcrypt.hashSync(data.user.password, 10);
     user = await User.create(data.user);
-    data.user = user.toJSON()
+    data.user = user.toJSON();
     delete data.user.password;
     let faculty;
     try {
-      faculty = await Faculty.create({...data.faculty, UserId: user.id })
+      faculty = await Faculty.create({ ...data.faculty, UserId: user.id });
     } catch (e) {
       console.log(e);
       user.destroy();
@@ -35,11 +38,11 @@ export const addFacultyDetails=async(req:Request, res:Response):Promise<Response
       });
     }
     const token = jwt.sign(data, "supersecretkey");
-    data.faculty = faculty.toJSON()
+    data.faculty = faculty.toJSON();
     return res.status(200).json({
       msg: "success",
-      data: {token,data},
-      error:null,
+      data: { token, data },
+      error: null,
     });
   } catch (error) {
     console.log(error);
@@ -49,28 +52,8 @@ export const addFacultyDetails=async(req:Request, res:Response):Promise<Response
       error,
     });
   }
-  // const {qualification,designation,department} = req.body
+};
 
-  // try {
-  //     // const err = validationResult(req)
-  //     // if(!err.isEmpty()){
-  //     //     return res.status(400).json({success:false,errorType:"array",error:err.array()})
-  //     // }
-  //     let faculty= await Faculty.findOne({where:{userId:res.locals.user.id}})
-  //     if(faculty){
-  //         return res.status(401).json({msg:"failure",data:"msg",error:"faculty deatils already exists"})
-  //     }
-  //     faculty=await Faculty.create({...req.body, userId:res.locals.user.id})
-  //     console.log(faculty);
-  //
-  //     return res.status(200).json({msg:"success",data:faculty,error:null})
-  // } catch (error) {
-  //     console.log(error);
-  //
-  //     return res.status(500).json({success:false,errorType:"msg",error:"Internal server error"})
-  // }
-
-}
 export const getFaculty = async (req: Request, res: Response) => {
   try {
     const facultyId = req.params.facultyId;
@@ -100,18 +83,51 @@ export const getFaculty = async (req: Request, res: Response) => {
 };
 
 export const getAllFaculty = async (req: Request, res: Response) => {
-    try {
-        let faculties = await Faculty.findAll()
-        return res.status(200).json({
-            msg: "success",
-            data: faculties,
-            error: null
-        })
-    } catch (e) {
-        return res.status(500).json({
-            msg: "failure",
-            data: null,
-            error: e
-        })
-    }
-}
+  try {
+    let faculties = await Faculty.findAll();
+    return res.status(200).json({
+      msg: "success",
+      data: faculties,
+      error: null,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      msg: "failure",
+      data: null,
+      error: e,
+    });
+  }
+};
+
+export const getFacultyByDept = async (req: Request, res: Response) => {
+  try {
+    if (!res.locals.user.isFaculty) return res.status(400).json({
+      msg: "failure",
+      data: null,
+      error: "access denied"
+    })
+    const hodOfDept = res.locals.user.faculty.hodOfDepartment
+    if (!hodOfDept) return res.status(400).json({
+      msg: "failure",
+      data: null,
+      error: "access denied"
+    })
+    const faculties = await Faculty.findAll({
+      where: {
+        department: hodOfDept
+      }
+    })
+    return res.status(200).json({
+      msg: "success",
+      data: faculties,
+      error: null
+    })
+
+  } catch (e) {
+    return res.status(500).json({
+      msg: "failure",
+      data: null,
+      error: e
+    })
+  }
+};

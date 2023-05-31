@@ -26,6 +26,7 @@ class FacultyLeave extends Model<
   declare fileDocument: Express.Multer.File | undefined;
   declare workArrangement: ForeignKey<Faculty["id"]>;
   declare addrDuringLeave: string;
+  declare outstationPermission: boolean;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -67,6 +68,10 @@ FacultyLeave.init(
       //  1 -> hod approved
       //  2 -> dean approved
       // -1 -> rejected
+    },
+    outstationPermission: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     },
     workArrangement:{
       type:DataTypes.UUID,
