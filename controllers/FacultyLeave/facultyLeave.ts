@@ -2,6 +2,7 @@ import Faculty from "../../models/faculty";
 import User from "../../models/user";
 import { Request, Response } from "express";
 import FacultyLeave from "../../models/facultyLeave";
+import { Op } from "sequelize";
 
 export const applyLeave = async (req: Request, res: Response) => {
   try {
@@ -69,7 +70,10 @@ export const getLeavesByDept = async (req: Request, res: Response) => {
         {
           model: Faculty,
           where:{
-            department
+            department,
+            id: {
+              [Op.ne]: res.locals.user.faculty.id
+            }
           }
         },
       ],
