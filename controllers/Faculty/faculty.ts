@@ -3,6 +3,7 @@ import Faculty from "../../models/faculty";
 import User from "../../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Op } from "sequelize";
 
 export const addFacultyDetails = async (
   req: Request,
@@ -101,33 +102,37 @@ export const getAllFaculty = async (req: Request, res: Response) => {
 
 export const getFacultyByDept = async (req: Request, res: Response) => {
   try {
-    if (!res.locals.user.isFaculty) return res.status(400).json({
-      msg: "failure",
-      data: null,
-      error: "access denied"
-    })
-    const hodOfDept = res.locals.user.faculty.hodOfDepartment
-    if (!hodOfDept) return res.status(400).json({
-      msg: "failure",
-      data: null,
-      error: "access denied"
-    })
+    if (!res.locals.user.isFaculty)
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied",
+      });
+    const hodOfDept = res.locals.user.faculty.hodOfDepartment;
+    if (!hodOfDept)
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied",
+      });
     const faculties = await Faculty.findAll({
       where: {
-        department: hodOfDept
-      }
-    })
+        department: hodOfDept,
+        hodOfDepartment: {
+          [Op.ne]: hodOfDept
+        },
+      },
+    });
     return res.status(200).json({
       msg: "success",
       data: faculties,
-      error: null
-    })
-
+      error: null,
+    });
   } catch (e) {
     return res.status(500).json({
       msg: "failure",
       data: null,
-      error: e
-    })
+      error: e,
+    });
   }
 };
