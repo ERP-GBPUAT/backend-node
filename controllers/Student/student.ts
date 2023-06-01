@@ -77,14 +77,21 @@ export const getStudent = async (req: Request, res: Response) => {
       });
     }
     if (isFaculty === true) {
-      if (res.locals.user.faculty.id !== student.FacultyId) {
-        return res.status(400).json({
-          msg: "failure",
-          data: null,
-          error: "access denied"
+      if (res.locals.user.faculty.id === student.FacultyId) {
+        return res.status(200).json({
+          msg: "success",
+          data: student,
+          error: null
         })
       }
     }
+    student = await Student.findByPk(studentId, {
+      attributes: ["id"],
+      include: {
+        model: User,
+        attributes: ["name", "email", "phoneNo"]
+      }
+    })
     return res.status(200).json({
       msg: "success",
       data: student,
