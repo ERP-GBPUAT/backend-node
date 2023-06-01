@@ -102,13 +102,15 @@ export const getAllFaculty = async (req: Request, res: Response) => {
 
 export const getFacultyByDept = async (req: Request, res: Response) => {
   try {
-    if (!res.locals.user.isFaculty)
+    if (!res.locals.user.user.isFaculty){
       return res.status(400).json({
         msg: "failure",
         data: null,
         error: "access denied",
-      });
+      });}
     const hodOfDept = res.locals.user.faculty.hodOfDepartment;
+    console.log(hodOfDept);
+    
     if (!hodOfDept)
       return res.status(400).json({
         msg: "failure",
@@ -122,6 +124,7 @@ export const getFacultyByDept = async (req: Request, res: Response) => {
           [Op.ne]: res.locals.user.faculty.id
         },
       },
+      include:User
     });
     return res.status(200).json({
       msg: "success",

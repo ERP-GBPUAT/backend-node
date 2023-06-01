@@ -11,7 +11,7 @@ import authentication from "../middleware/authentication";
 const router = express.Router();
 router.get("/get/:studentId", authentication, getStudent);
 // router.patch("/update", authentication, updateStudent);
-router.get("/getAdvisees", authentication, getAdvisees);
+router.post("/getAdvisees", authentication, getAdvisees);
 router.get("/getByBatch/:year", authentication, getStudentsByBatch);
 router.post("/register", addStudent);
 

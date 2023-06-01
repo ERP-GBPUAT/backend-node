@@ -166,7 +166,10 @@ export const getAdvisees = async (req: Request, res: Response) => {
     //   })
     // }
     let facultyId
-    if (res.locals.user.user.isFaculty) facultyId = res.locals.user.faculty.id
+    if (res.locals.user.user.isFaculty){
+      if(res.locals.user.faculty.hodOfDepartment) facultyId=req.body.facultyId
+      else facultyId = res.locals.user.faculty.id
+    } 
     else if (res.locals.user.isStudent) facultyId = res.locals.user.student.FacultyId
     let students = await Student.findAll({
       include: User,
