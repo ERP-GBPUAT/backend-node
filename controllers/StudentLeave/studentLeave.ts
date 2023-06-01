@@ -158,13 +158,13 @@ export const advisorApproval = async (req: Request, res: Response) => {
         error: "access denied",
       });
     }
-    if (!res.locals.user.faculty.isAdvisor) {
-      return res.status(400).json({
-        msg: "failure",
-        data: null,
-        error: "access denied",
-      });
-    }
+    // if (!res.locals.user.faculty.isAdvisor) {
+    //   return res.status(400).json({
+    //     msg: "failure",
+    //     data: null,
+    //     error: "access denied",
+    //   });
+    // }
     let success = await StudentLeave.update(
       {
         advisorApproval,
