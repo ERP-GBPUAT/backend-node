@@ -8,7 +8,7 @@ class HostelComplaint extends Model {
   declare level: number;
   declare status: string;
   declare description: string;
-  declare rejection_note: CreationOptional<string>;
+  declare rejection_note: string;
   declare reg_date : string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -23,10 +23,10 @@ HostelComplaint.init(
   },
   complainant: {
       type: DataTypes.INTEGER,
-      references: {
-        model: "Students",
-        key: "studentId",
-      }
+      // references: {
+      //   model: "Students",
+      //   key: "studentId",
+      // }
   },
   type_of_complaint :{
     type:DataTypes.STRING,
@@ -46,7 +46,7 @@ HostelComplaint.init(
       type:DataTypes.STRING,
       defaultValue:null
   },
- 
+
   reg_date:{
     type:DataTypes.STRING
   }
