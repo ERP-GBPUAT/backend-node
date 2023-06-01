@@ -61,7 +61,12 @@ export const getStudentLeaves = async (req: Request, res: Response) => {
         error: "student does not exist. Something wrong must have happened",
       });
     }
-    const leaves = await student.getLeaves();
+    // const leaves = await student.getLeaves();
+    const leaves = await StudentLeave.findAll({
+      where: {
+        StudentId: student.id
+      }
+    })
     return res.status(200).json({
       msg: "success",
       data: leaves,
