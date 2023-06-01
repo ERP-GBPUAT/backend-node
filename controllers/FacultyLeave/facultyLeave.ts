@@ -156,6 +156,43 @@ export const approveLeave = async (req: Request, res: Response) => {
   }
 }
 
+export const rejectLeave = async (req: Request, res: Response) => {
+  try {
+    const hodOfDepartment = res.locals.user.faculty.hodOfDepartment;
+    const deanOfCollege = res.locals.user.faculty.deanOfCollege;
+    let status = 0;
+    if (hodOfDepartment) {
+      status = -1;
+    }
+    if (deanOfCollege) {
+      status = -2;
+    }
+    if (status === 0) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied"
+      })
+    }
+    const leave = FacultyLeave.update({status}, {
+      where: {
+        id: req.params.facultyLeaveId
+      }
+    })
+    return res.status(200).json({
+      msg: "success",
+      data: leave,
+      error: null
+    })
+  } catch (e) {
+    return res.status(500).json({
+      msg: "failure",
+      data: null,
+      error: e
+    })
+  }
+}
+
 export const getFacultyLeaveById = async (req: Request, res: Response) => {
   try {
     const leaveId = req.params.facultyLeaveId
