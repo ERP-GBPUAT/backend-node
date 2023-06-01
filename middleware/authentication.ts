@@ -2,16 +2,16 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
 const authentication = async(req:Request, res:Response,next:NextFunction)=>{
     const token = req.header('token');
-    console.log(token);
+    // console.log(token);
     
     if(!token){
-        console.log(token);
+        // console.log(token);
         
         return res.status(401).json({error:"Access Denied"})
     }
     try {
         const data = jwt.verify(token,"supersecretkey");
-        console.log(data);
+        // console.log(data);
         
         res.locals.user = data
         // res.locals.user=res.locals.user.user;

@@ -173,11 +173,17 @@ export const getAdvisees = async (req: Request, res: Response) => {
     //   })
     // }
     let facultyId
+    // console.log(res.locals.user.user.isFaculty);
+    // console.log(res.locals.user.user.isStudent);
+    
     if (res.locals.user.user.isFaculty){
+      console.log("faculty");
+      
       if(res.locals.user.faculty.hodOfDepartment) facultyId=req.body.facultyId
       else facultyId = res.locals.user.faculty.id
     } 
-    else if (res.locals.user.isStudent) facultyId = res.locals.user.student.FacultyId
+    else if (res.locals.user.user.isStudent){console.log("student");
+     facultyId = res.locals.user.student.FacultyId}
     let students = await Student.findAll({
       include: User,
       where: {
