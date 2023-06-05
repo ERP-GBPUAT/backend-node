@@ -53,6 +53,7 @@ export const getStudent = async (req: Request, res: Response) => {
     let studentId = req.params.studentId;
     const isStudent = res.locals.user.user.isStudent;
     const isFaculty = res.locals.user.user.isFaculty;
+    const isStaff = res.locals.user.user.isStaff;
     if (isStudent === true) {
       if (!studentId) {
         studentId = res.locals.user.student.id
@@ -75,6 +76,15 @@ export const getStudent = async (req: Request, res: Response) => {
         data: null,
         error: "student not found",
       });
+    }
+    if (isStaff === true) {
+      if (res.locals.user.staff.isAdmin === true) {
+        return res.status(200).json({
+          msg: "success",
+          data: student,
+          error: null
+        })
+      }
     }
     if (isFaculty === true) {
       if (res.locals.user.faculty.id === student.FacultyId) {
@@ -134,27 +144,37 @@ export const getStudentsByBatch = async (req: Request, res: Response) => {
   }
 };
 
-// export const updateStudent = async (req: Request, res: Response) => {
-//   try {
-//     let student = req.body;
-//     const studentId = student.id;
-//     delete student["id"];
-//     await Student.update(student, {
-//       where: { id: studentId },
-//     });
-//     return res.status(200).json({
-//       msg: "success",
-//       data: null,
-//       error: null,
-//     });
-//   } catch (e) {
-//     return res.status(500).json({
-//       msg: "failure",
-//       data: null,
-//       error: e,
-//     });
-//   }
-// };
+export const updateStudent = async (req: Request, res: Response) => {
+  try {
+    if (!res.locals.user.user.isStaff) return res.status(200).json({
+      msg: "failure",
+      data: null,
+      error: "access denied"
+    })
+    if (!res.locals.user.staff.isAdmin) return res.status(200).json({
+      msg: "failure",
+      data: null,
+      error: "access denied"
+    })
+    let student = req.body;
+    const studentId = student.id;
+    delete student["id"];
+    await Student.update(student, {
+      where: { id: studentId },
+    });
+    return res.status(200).json({
+      msg: "success",
+      data: null,
+      error: null,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      msg: "failure",
+      data: null,
+      error: e,
+    });
+  }
+};
 
 export const getAdvisees = async (req: Request, res: Response) => {
   try {
@@ -175,13 +195,13 @@ export const getAdvisees = async (req: Request, res: Response) => {
     let facultyId
     // console.log(res.locals.user.user.isFaculty);
     // console.log(res.locals.user.user.isStudent);
-    
+
     if (res.locals.user.user.isFaculty){
       console.log("faculty");
-      
+
       if(res.locals.user.faculty.hodOfDepartment) facultyId=req.body.facultyId
       else facultyId = res.locals.user.faculty.id
-    } 
+    }
     else if (res.locals.user.user.isStudent){console.log("student");
      facultyId = res.locals.user.student.FacultyId}
     let students = await Student.findAll({
