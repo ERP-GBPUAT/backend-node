@@ -9,6 +9,7 @@ import studentRouter from "./routes/student";
 import studentLeaveRouter from "./routes/studentLeave";
 import facultyResearchRouter from "./routes/facultyResearch";
 import facultyRouter from "./routes/faculty";
+import staffRouter from "./routes/staff";
 import cdbRouter from "./routes/cdb";
 import facultyLeaveRouter from "./routes/facultyLeave";
 import dotenv from "dotenv";
@@ -28,6 +29,7 @@ app.use("/student", studentRouter);
 app.use("/studentLeave", studentLeaveRouter);
 app.use("/facultyResearch", facultyResearchRouter);
 app.use("/faculty", facultyRouter);
+app.use("/staff", staffRouter);
 app.use("/complaint", cdbRouter);
 app.use("/facultyLeave", facultyLeaveRouter)
 
