@@ -14,6 +14,7 @@ class NoDues extends Model<
   InferCreationAttributes<NoDues>
 > {
   declare id: string;
+  declare advisorCode: string;
   declare accountName: string;
   declare accountNumber: string;
   declare bankName: string;
