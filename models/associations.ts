@@ -10,6 +10,7 @@ import Subject from "./subject";
 import NoDues from "./nodues";
 import Staff from "./staff";
 import Notice from "./notices";
+import EmpNoDues from "./empNoDues";
 
 User.hasOne(Student);
 Student.belongsTo(User);
@@ -44,6 +45,8 @@ Course.hasOne(Subject);
 Student.hasOne(NoDues);
 NoDues.belongsTo(Student);
 
+Faculty.hasOne(EmpNoDues);
+EmpNoDues.belongsTo(Faculty);
 
 User.sync()
 Faculty.sync()
@@ -58,3 +61,4 @@ Subject.sync();
 NoDues.sync()
 Staff.sync()
 Notice.sync()
+EmpNoDues.sync()

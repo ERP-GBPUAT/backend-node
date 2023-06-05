@@ -1,5 +1,5 @@
 import express from "express";
-import { applyNoDues, approveNoDues, getAdviseeNoDues, getAllNoDues, getNoDues } from "../controllers/NoDues/nodues";
+import { applyNoDues, approveNoDues, getAdviseeNoDues, getAllNoDues, getNoDues, getStatus } from "../controllers/NoDues/nodues";
 import authentication from "../middleware/authentication";
 import { applyEmpNoDues, approveEmpNoDues, getAllEmpNoDues } from "../controllers/NoDues/empNoDues";
 
@@ -10,6 +10,7 @@ router.post("/applyNodue",authentication,applyNoDues)
 router.get("/getNodueAdvisor",authentication,getAdviseeNoDues)
 router.get("/getAllNddue",authentication,getAllNoDues)
 router.get("/getNodue",authentication,getNoDues)
+router.get("/getStatus/:applicationId",authentication,getStatus)
 router.post("/approveNodue",authentication,approveNoDues)
 router.get("/getAllEmpNddue",authentication,getAllEmpNoDues)
 router.post("/approveEmpNodue",authentication,approveEmpNoDues)

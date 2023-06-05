@@ -10,7 +10,7 @@ export const applyEmpNoDues = async (req: Request, res: Response) => {
         error: "access denied",
       });
     }
-    let application = await EmpNoDues.create(req.body);
+    let application = await EmpNoDues.create({...req.body,FacultyId:res.locals.user.faculty.id});
     return res.status(200).json({
       msg: "success",
       data: application,
