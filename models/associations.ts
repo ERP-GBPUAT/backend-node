@@ -7,6 +7,7 @@ import Research from "./facultyResearch";
 import Inventory from "./inventory";
 import { Semester,Course } from "./semester";
 import Subject from "./subject";
+import NoDues from "./nodues";
 
 User.hasOne(Student);
 Student.belongsTo(User);
@@ -35,6 +36,9 @@ Course.belongsTo(Semester);
 Subject.belongsTo(Course)
 Course.hasOne(Subject);
 
+Student.hasOne(NoDues);
+NoDues.belongsTo(Student);
+
 
 User.sync()
 Faculty.sync()
@@ -46,3 +50,4 @@ Inventory.sync();
 Semester.sync();
 Course.sync();
 Subject.sync();
+NoDues.sync()

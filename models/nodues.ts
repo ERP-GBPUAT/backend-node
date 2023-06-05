@@ -4,8 +4,10 @@ import {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
+  ForeignKey
 } from "sequelize";
 import sequelize from "./indexModel";
+import Student from "./student";
 
 class NoDues extends Model<
   InferAttributes<NoDues>,
@@ -44,6 +46,7 @@ class NoDues extends Model<
   declare other2: number;
   declare balance: number;
   declare status: JSON;
+  declare StudentId: ForeignKey<Student["id"]>;
   // declare approved: string[];
   // declare rejected: string[];
   // declare ITDepartment: string;
