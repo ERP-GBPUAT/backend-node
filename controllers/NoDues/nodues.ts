@@ -31,22 +31,15 @@ export const applyNoDues = async (req: Request, res: Response) => {
 
 export const getNoDues = async (req: Request, res: Response) => {
   try {
-    let applicationId = req.params.id;
-    if (!res.locals.user.isStudent) {
+    // let applicationId = req.params.id;
+    if (!res.locals.user.user.isStudent) {
       return res.status(400).json({
         msg: 'failure',
         data: null,
         error: "access denied"
       })
     }
-    let application = await NoDues.findByPk(applicationId);
-    if (res.locals.user.student.id !== application?.StudentId) {
-      return res.status(400).json({
-        msg: 'failure',
-        data: null,
-        error: "access denied"
-      })
-    }
+    let application = await NoDues.findAll();
     return res.status(200).json({
       msg: "success",
       data: application,
@@ -163,11 +156,7 @@ export const approveNoDues = async (req: Request, res: Response) => {
         },
       }
     );
-    return res.status(200).json({
-      msg: "success",
-      data: {...application.dataValues, status},
-      error: null
-    });
+    return res.status(200)
   } catch (e) {
     return res.status(500).json({
       msg: "failure",
