@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import NoDues from "../../models/nodues";
 import Student from "../../models/student";
-import { errorMonitor } from "events";
 
 export const applyNoDues = async (req: Request, res: Response) => {
   try {
@@ -11,7 +10,11 @@ export const applyNoDues = async (req: Request, res: Response) => {
         data: null,
         error: "access denied",
       });
-    let data = { ...req.body, advisorCode: res.locals.user.student.FacultyId,StudentId:res.locals.user.student.id };
+    let data = {
+      ...req.body,
+      advisorCode: res.locals.user.student.FacultyId,
+      StudentId: res.locals.user.student.id,
+    };
     let application = await NoDues.create(data);
     return res.status(200).json({
       msg: "success",
@@ -20,7 +23,6 @@ export const applyNoDues = async (req: Request, res: Response) => {
     });
   } catch (e) {
     console.log(e);
-    
     return res.status(500).json({
       msg: "failure",
       data: null,
@@ -34,10 +36,10 @@ export const getNoDues = async (req: Request, res: Response) => {
     // let applicationId = req.params.id;
     if (!res.locals.user.user.isStudent) {
       return res.status(400).json({
-        msg: 'failure',
+        msg: "failure",
         data: null,
-        error: "access denied"
-      })
+        error: "access denied",
+      });
     }
     let application = await NoDues.findAll();
     return res.status(200).json({
@@ -68,8 +70,8 @@ export const approveNoDues = async (req: Request, res: Response) => {
       });
     }
     let status: any = { ...application.status };
-    let date = new Date()
-    const name = res.locals.user.user.name
+    let date = new Date();
+    const name = res.locals.user.user.name;
     if (isFaculty) {
       const student = await Student.findByPk(application.StudentId);
       if (res.locals.user.faculty.id === student?.FacultyId) {
@@ -92,8 +94,16 @@ export const approveNoDues = async (req: Request, res: Response) => {
         status.warden = {
           approved,
           name,
-          date
-        }
+          date,
+        };
+      }
+      const deanOfCollege = res.locals.user.faculty.deanOfCollege;
+      if (deanOfCollege) {
+        status.dean = {
+          approved,
+          name,
+          date,
+        };
       }
     }
     if (isStaff) {
@@ -102,54 +112,54 @@ export const approveNoDues = async (req: Request, res: Response) => {
         status.CCF = {
           approved,
           name,
-          date
-        }
+          date,
+        };
       }
       if (staff.isComptroller) {
         status.comptroller = {
           approved,
           name,
-          date
-        }
+          date,
+        };
       }
       if (staff.isLibrarian) {
         status.library = {
           approved,
           name,
-          date
-        }
+          date,
+        };
       }
       if (staff.isETS) {
         status.ets = {
           approved,
           name,
-          date
-        }
+          date,
+        };
       }
       if (staff.isCBSH) {
         status.cbsh = {
           approved,
           name,
-          date
-        }
+          date,
+        };
       }
       if (staff.isStadiumHead) {
         status.physicalEducation = {
           approved,
           name,
-          date
-        }
+          date,
+        };
       }
       if (staff.isAccountant) {
         status.accountant = {
           approved,
           name,
-          date
-        }
+          date,
+        };
       }
     }
     await NoDues.update(
-      { status: status },
+      { status },
       {
         where: {
           id: applicationId,
@@ -174,27 +184,34 @@ export const approveNoDues = async (req: Request, res: Response) => {
 
 export const getAllNoDues = async (req: Request, res: Response) => {
   try {
-    if (!res.locals.user.user.isStaff && !(res.locals.user.user.isFaculty && res.locals.user.faculty.hodOfDepartment)) {
+    if (
+      !res.locals.user.user.isStaff &&
+      !(
+        res.locals.user.user.isFaculty &&
+        (res.locals.user.faculty.hodOfDepartment ||
+          res.locals.user.faculty.deanOfCollege)
+      )
+    ) {
       return res.status(400).json({
         msg: "success",
         data: null,
-        error: "access denied"
-      })
+        error: "access denied",
+      });
     }
-    let applications = await NoDues.findAll()
+    let applications = await NoDues.findAll();
     return res.status(200).json({
       msg: "success",
       data: applications,
-      error: null
-    })
+      error: null,
+    });
   } catch (e) {
     return res.status(500).json({
       msg: "success",
       data: null,
-      error: e
-    })
+      error: e,
+    });
   }
-}
+};
 
 export const getAdviseeNoDues = async (req: Request, res: Response) => {
   try {
@@ -202,24 +219,24 @@ export const getAdviseeNoDues = async (req: Request, res: Response) => {
       return res.status(400).json({
         msg: "success",
         data: null,
-        error: "access denied"
-      })
+        error: "access denied",
+      });
     }
     let applications = await NoDues.findAll({
       where: {
-        advisorCode: res.locals.user.faculty.id
-      }
-    })
+        advisorCode: res.locals.user.faculty.id,
+      },
+    });
     return res.status(200).json({
       msg: "success",
       data: applications,
-      error: null
-    })
+      error: null,
+    });
   } catch (e) {
     return res.status(500).json({
       msg: "failure",
       data: null,
-      error: e
-    })
+      error: e,
+    });
   }
-}
+};
