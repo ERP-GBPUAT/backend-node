@@ -11,7 +11,7 @@ export const applyNoDues = async (req: Request, res: Response) => {
         data: null,
         error: "access denied",
       });
-    let data = { ...req.body, advisorCode: res.locals.user.student.FacultyId };
+    let data = { ...req.body, advisorCode: res.locals.user.student.FacultyId,StudentId:res.locals.user.student.id };
     let application = await NoDues.create(data);
     return res.status(200).json({
       msg: "success",
@@ -156,6 +156,8 @@ export const approveNoDues = async (req: Request, res: Response) => {
         },
       }
     );
+    console.log(status);
+    
     return res.status(200)
   } catch (e) {
     return res.status(500).json({
