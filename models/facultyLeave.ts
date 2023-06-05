@@ -74,11 +74,11 @@ FacultyLeave.init(
       defaultValue: false
     },
     workArrangement:{
-      type:DataTypes.UUID,
-      references:{
-        model:Faculty,
-        key:"id"
-      }
+      type:DataTypes.STRING,
+      // references:{
+      //   model:Faculty,
+      //   key:"id"
+      // }
     },
     toCount: {
       type: DataTypes.BOOLEAN,
