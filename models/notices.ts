@@ -5,6 +5,8 @@ class Notice extends Model {
   declare id: CreationOptional<string>;
   declare title: string;
   declare description: string;
+  declare type:string;
+  declare department:string;
   declare fileDocument: Express.Multer.File | undefined;
   declare date: Date;
   declare createdAt: CreationOptional<Date>;
@@ -22,9 +24,17 @@ Notice.init(
       type: DataTypes.STRING,
       allowNull:false
     },
+    type:{
+        type:DataTypes.STRING,
+        allowNull:false
+    },
     description: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.TEXT,
       allowNull:false
+    },
+    department:{
+        type:DataTypes.STRING,
+        allowNull:false,
     },
     date:{
         type:DataTypes.DATE,

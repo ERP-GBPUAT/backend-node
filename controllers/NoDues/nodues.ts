@@ -158,7 +158,11 @@ export const approveNoDues = async (req: Request, res: Response) => {
     );
     console.log(status);
     
-    return res.status(200)
+    return res.status(200).json({
+      msg: "success",
+      data: {...application.dataValues, status},
+      error: null,
+    })
   } catch (e) {
     return res.status(500).json({
       msg: "failure",
