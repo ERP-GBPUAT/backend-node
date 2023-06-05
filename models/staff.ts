@@ -12,6 +12,7 @@ class Staff extends Model<InferAttributes<Staff>, InferCreationAttributes<Staff>
   declare isAdmin: boolean;
   declare isLibrarian: boolean;
   declare isCCF: boolean;
+  declare isComptroller:boolean;
 }
 
 Staff.init({
@@ -29,6 +30,10 @@ Staff.init({
     defaultValue: false,
   },
   isCCF: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  isComptroller: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },

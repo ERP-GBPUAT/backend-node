@@ -8,9 +8,13 @@ import Inventory from "./inventory";
 import { Semester,Course } from "./semester";
 import Subject from "./subject";
 import NoDues from "./nodues";
+import Staff from "./staff";
 
 User.hasOne(Student);
 Student.belongsTo(User);
+
+User.hasOne(Staff)
+Staff.belongsTo(User)
 
 User.hasOne(Faculty);
 Faculty.belongsTo(User);
@@ -51,3 +55,4 @@ Semester.sync();
 Course.sync();
 Subject.sync();
 NoDues.sync()
+Staff.sync()
