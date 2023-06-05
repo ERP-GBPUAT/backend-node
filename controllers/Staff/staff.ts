@@ -23,7 +23,7 @@ export const addStaff = async (req: Request, res: Response) => {
     delete data.user.password;
     let staff;
     try {
-      staff = await Staff.create({ ...data.student, UserId: user.id });
+      staff = await Staff.create({ ...data.staff, UserId: user.id });
     } catch (e) {
       console.log(e);
       user.destroy();
@@ -34,7 +34,7 @@ export const addStaff = async (req: Request, res: Response) => {
           "Unable to register! This may be due to invalid input, else try again after some time",
       });
     }
-    data.student = staff.toJSON();
+    data.staff = staff.toJSON();
     const token = jwt.sign(data, "supersecretkey");
     return res.json({ success: true, token, data });
   } catch (error) {
