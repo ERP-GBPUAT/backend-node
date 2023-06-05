@@ -134,7 +134,7 @@ export const getStudentsByFilter = async (req: Request, res: Response) => {
         error: "access denied"
       })
     }
-    let student = await Student.findOne({
+    let student = await Student.findAll({
       // include: User,
       where: filter,
     });
