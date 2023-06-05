@@ -177,3 +177,5 @@ NoDues.init(
   },
   { sequelize }
 );
+
+export default NoDues;

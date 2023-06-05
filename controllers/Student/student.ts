@@ -116,12 +116,27 @@ export const getStudent = async (req: Request, res: Response) => {
   }
 };
 
-export const getStudentsByBatch = async (req: Request, res: Response) => {
-  const batch = req.params.year;
+export const getStudentsByFilter = async (req: Request, res: Response) => {
+  // const batch = req.params.year;
+  const filter = req.body;
   try {
+    if (!res.locals.user.user.isStaff) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied"
+      })
+    }
+    if (!res.locals.user.staff.isAdmin) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied"
+      })
+    }
     let student = await Student.findOne({
       // include: User,
-      where: { batch: batch },
+      where: filter,
     });
     if (!student) {
       return res.status(404).json({
@@ -146,12 +161,12 @@ export const getStudentsByBatch = async (req: Request, res: Response) => {
 
 export const updateStudent = async (req: Request, res: Response) => {
   try {
-    if (!res.locals.user.user.isStaff) return res.status(200).json({
+    if (!res.locals.user.user.isStaff) return res.status(400).json({
       msg: "failure",
       data: null,
       error: "access denied"
     })
-    if (!res.locals.user.staff.isAdmin) return res.status(200).json({
+    if (!res.locals.user.staff.isAdmin) return res.status(400).json({
       msg: "failure",
       data: null,
       error: "access denied"
