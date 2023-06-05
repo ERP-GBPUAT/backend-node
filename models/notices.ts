@@ -1,7 +1,7 @@
 import { Model, DataTypes, CreationOptional } from "sequelize";
 import sequelize from "./indexModel";
 
-class Complaint extends Model {
+class Notice extends Model {
   declare id: CreationOptional<string>;
   declare title: string;
   declare description: string;
@@ -11,7 +11,7 @@ class Complaint extends Model {
   declare updatedAt: CreationOptional<Date>;
 }
 
-Complaint.init(
+Notice.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -37,4 +37,4 @@ Complaint.init(
   { sequelize }
 );
 
-export default Complaint
+export default Notice
