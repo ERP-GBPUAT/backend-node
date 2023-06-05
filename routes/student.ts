@@ -9,7 +9,7 @@ import {
 import authentication from "../middleware/authentication";
 
 const router = express.Router();
-router.get("/get/:studentId", authentication, getStudent);
+router.get("/getStudent/:studentId", authentication, getStudent);
 // router.patch("/update", authentication, updateStudent);
 router.post("/getAdvisees", authentication, getAdvisees);
 router.post("/getStudentsByFilter", authentication, getStudentsByFilter);

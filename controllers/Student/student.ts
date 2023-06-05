@@ -137,6 +137,7 @@ export const getStudentsByFilter = async (req: Request, res: Response) => {
     let student = await Student.findAll({
       // include: User,
       where: filter,
+      include:User
     });
     if (!student) {
       return res.status(404).json({
