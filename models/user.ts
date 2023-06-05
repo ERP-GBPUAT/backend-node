@@ -11,6 +11,7 @@ import sequelize from "./indexModel";
 
 import Student from "./student"
 import Faculty from "./faculty"
+import Staff from "./staff";
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id:CreationOptional<string>;
@@ -18,6 +19,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare password: string;
   declare isStudent: boolean;
   declare isFaculty: boolean;
+  declare isStaff: boolean;
   declare name: string;
   declare phoneNo: string;
   declare dob: Date;
@@ -27,6 +29,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare updatedAt: CreationOptional<Date>;
   declare getStudent: HasOneGetAssociationMixin<Student>;
   declare getFaculty: HasOneGetAssociationMixin<Faculty>;
+  declare getStaff: HasOneGetAssociationMixin<Staff>;
   // declare Student?: NonAttribute<Student>;
   // declare Faculty?: NonAttribute<Faculty>;
 }
@@ -53,6 +56,10 @@ User.init(
     isFaculty: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
+    },
+    isStaff:{
+      type:DataTypes.BOOLEAN,
+      defaultValue:false
     },
     name: {
       type: DataTypes.STRING,

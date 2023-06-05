@@ -4,15 +4,15 @@ import {
   getStudent,
   // updateStudent,
   getAdvisees,
-  getStudentsByBatch,
+  getStudentsByFilter,
 } from "../controllers/Student/student";
 import authentication from "../middleware/authentication";
 
 const router = express.Router();
-router.get("/get/:studentId", authentication, getStudent);
+router.get("/getStudent/:studentId", authentication, getStudent);
 // router.patch("/update", authentication, updateStudent);
 router.post("/getAdvisees", authentication, getAdvisees);
-router.get("/getByBatch/:year", authentication, getStudentsByBatch);
+router.post("/getStudentsByFilter", authentication, getStudentsByFilter);
 router.post("/register", addStudent);
 
 export default router;
