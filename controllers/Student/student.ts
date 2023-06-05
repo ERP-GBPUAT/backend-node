@@ -3,7 +3,6 @@ import Student from "../../models/student";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../../models/user";
-import Faculty from "../../models/faculty";
 
 export const addStudent = async (req: Request, res: Response) => {
   try {

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import NoDues from "../../models/nodues";
 import Student from "../../models/student";
-import Faculty from "../../models/faculty";
+import { errorMonitor } from "events";
 
 export const applyNoDues = async (req: Request, res: Response) => {
   try {
@@ -19,6 +19,8 @@ export const applyNoDues = async (req: Request, res: Response) => {
       error: null,
     });
   } catch (e) {
+    console.log(e);
+    
     return res.status(500).json({
       msg: "failure",
       data: null,
@@ -161,6 +163,11 @@ export const approveNoDues = async (req: Request, res: Response) => {
         },
       }
     );
+    return res.status(200).json({
+      msg: "success",
+      data: {...application.dataValues, status},
+      error: null
+    });
   } catch (e) {
     return res.status(500).json({
       msg: "failure",

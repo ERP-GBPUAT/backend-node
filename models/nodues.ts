@@ -79,6 +79,9 @@ NoDues.init(
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4,
     },
+    advisorCode:{
+      type:DataTypes.STRING
+    },
     accountName: {
       type: DataTypes.STRING,
     },
