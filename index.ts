@@ -12,6 +12,7 @@ import facultyRouter from "./routes/faculty";
 import staffRouter from "./routes/staff";
 import cdbRouter from "./routes/cdb";
 import facultyLeaveRouter from "./routes/facultyLeave";
+import noticeRouter from "./routes/notices";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -32,6 +33,7 @@ app.use("/faculty", facultyRouter);
 app.use("/staff", staffRouter);
 app.use("/complaint", cdbRouter);
 app.use("/facultyLeave", facultyLeaveRouter)
+app.use("/notices", noticeRouter)
 
 app.listen(PORT, () => {
   console.log(`server is listening  on ${PORT}`);
