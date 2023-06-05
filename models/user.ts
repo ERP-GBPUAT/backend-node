@@ -11,6 +11,7 @@ import sequelize from "./indexModel";
 
 import Student from "./student"
 import Faculty from "./faculty"
+import Staff from "./staff";
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id:CreationOptional<string>;
@@ -27,6 +28,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare updatedAt: CreationOptional<Date>;
   declare getStudent: HasOneGetAssociationMixin<Student>;
   declare getFaculty: HasOneGetAssociationMixin<Faculty>;
+  declare getStaff: HasOneGetAssociationMixin<Staff>;
   // declare Student?: NonAttribute<Student>;
   // declare Faculty?: NonAttribute<Faculty>;
 }

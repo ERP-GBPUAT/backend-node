@@ -43,6 +43,7 @@ export const userLogin = async (
     const { password, ...userData } = user.toJSON();
     const faculty = await user.getFaculty();
     const student = await user.getStudent();
+    const staff = await user.getStaff();
     let data:any = {
       user: userData,
     }
