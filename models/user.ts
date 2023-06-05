@@ -19,6 +19,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare password: string;
   declare isStudent: boolean;
   declare isFaculty: boolean;
+  declare isStaff: boolean;
   declare name: string;
   declare phoneNo: string;
   declare dob: Date;
@@ -55,6 +56,10 @@ User.init(
     isFaculty: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
+    },
+    isStaff:{
+      type:DataTypes.BOOLEAN,
+      defaultValue:false
     },
     name: {
       type: DataTypes.STRING,
