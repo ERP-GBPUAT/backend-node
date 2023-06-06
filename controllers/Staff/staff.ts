@@ -36,7 +36,11 @@ export const addStaff = async (req: Request, res: Response) => {
     }
     data.staff = staff.toJSON();
     const token = jwt.sign(data, "supersecretkey");
-    return res.json({ success: true, token, data });
+    return res.json({
+      msg: "success",
+      data: { token, data },
+      error: null,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({

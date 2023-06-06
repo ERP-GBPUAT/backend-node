@@ -3,7 +3,7 @@ import Notice from "../../models/notices";
 import path from "path";
 
 export const addNotice = async (req: Request, res: Response) => {
-    const noticeBody = req.body
+    const noticeBody = JSON.parse(req.body.data)
     let file = req.file
 
     try {
@@ -19,6 +19,8 @@ export const addNotice = async (req: Request, res: Response) => {
             });
         }
     } catch (error) {
+        console.log(error);
+        
         return res.status(500).json({
             msg: "failure",
             data: null,
@@ -30,6 +32,27 @@ export const addNotice = async (req: Request, res: Response) => {
 export const getAllNotices = async (req: Request, res: Response) => {
     try {
         let notices = await Notice.findAll();
+        return res.status(200).json({
+            msg: "success",
+            data: notices,
+            error: null,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            msg: "failure",
+            data: null,
+            error: "Not able to get the notices",
+        });
+    }
+}
+export const getAllNoticeByDept = async (req: Request, res: Response) => {
+    const data = req.body
+    try {
+        let notices = await Notice.findAll({
+            where:{
+                type:data.type
+            }
+        });
         return res.status(200).json({
             msg: "success",
             data: notices,
