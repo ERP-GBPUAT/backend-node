@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import NoDues from "../../models/nodues";
 import Student from "../../models/student";
+import User from "../../models/user";
 
 export const applyNoDues = async (req: Request, res: Response) => {
   try {
@@ -41,7 +42,7 @@ export const getNoDues = async (req: Request, res: Response) => {
         error: "access denied",
       });
     }
-    let application = await NoDues.findAll();
+    let application = await NoDues.findAll({include:{model:Student,include:[{model:User}]}});
     return res.status(200).json({
       msg: "success",
       data: application,
@@ -55,9 +56,34 @@ export const getNoDues = async (req: Request, res: Response) => {
     });
   }
 };
+export const getOneNoDue = async(req:Request,res:Response)=>{
+  try {
+    let {applicationId} = req.params;
+    // if (!res.locals.user.user.isStudent) {
+    //   return res.status(400).json({
+    //     msg: "failure",
+    //     data: null,
+    //     error: "access denied",
+    //   });
+    // }
+    let application = await NoDues.findOne({where:{id:applicationId},include:{model:Student,include:[{model:User}]}});
+    return res.status(200).json({
+      msg: "success",
+      data: application,
+      error: null,
+    });
+    
+  } catch (e) {
+    return res.status(500).json({
+      msg: "failure",
+      data: null,
+      error: e,
+    });
+  }
+}
 export const getStatus = async(req:Request,res:Response)=>{
   try {
-    let applicationId = req.params.id;
+    let {applicationId} = req.params;
     if (!res.locals.user.user.isStudent) {
       return res.status(400).json({
         msg: "failure",
@@ -65,7 +91,7 @@ export const getStatus = async(req:Request,res:Response)=>{
         error: "access denied",
       });
     }
-    let application = await NoDues.findByPk(applicationId);
+    let application = await NoDues.findOne({where:{id:applicationId},include:{model:Student,include:[{model:User}]}});
     return res.status(200).json({
       msg: "success",
       data: application?.status,
@@ -251,6 +277,7 @@ export const getAdviseeNoDues = async (req: Request, res: Response) => {
       where: {
         advisorCode: res.locals.user.faculty.id,
       },
+      include:{model:Student,include:[{model:User}]}
     });
     return res.status(200).json({
       msg: "success",
