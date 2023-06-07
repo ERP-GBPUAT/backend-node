@@ -24,7 +24,7 @@ router.post("/register",[
         }
         return true
     }),
-    body("user.address").trim().isAlpha().withMessage("Faculty id cannot contain numbers").trim().isLength({max:10}).withMessage("Max length of Id cannot exceed 10"),
+    body("user.address").trim().notEmpty().withMessage("Address cannot be empty"),
     body("faculty.id").trim().isAlpha().withMessage("Faculty id cannot contain numbers").trim().isLength({max:10}).withMessage("Max length of Id cannot exceed 10"),
     body('faculty.qualification',"Qualification must contain only letters").trim().matches(/^[a-zA-Z,.&*()]/),
     body('faculty.researchInterests').trim().notEmpty().withMessage('Research Interests cannot be empty').trim().isAlpha().isAlphanumeric().withMessage("Interest must also contain Alphabets")

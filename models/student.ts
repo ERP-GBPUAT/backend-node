@@ -14,7 +14,7 @@ class Student extends Model {
   declare parentPhone: string;
   declare parentEmail: string;
   declare hostel: string;
-  declare roomNo: string;
+  declare roomNo: number;
   declare cgpa: number;
   declare batch: number;
   declare FacultyId: ForeignKey<Faculty["id"]>;
@@ -60,7 +60,7 @@ Student.init(
       allowNull: false,
     },
     roomNo: {
-      type: DataTypes.STRING,
+      type: DataTypes.NUMBER,
       allowNull: false,
     },
     cgpa: {
@@ -68,7 +68,7 @@ Student.init(
       defaultValue: 0,
     },
     batch: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.NUMBER,
       allowNull: false,
     },
   },

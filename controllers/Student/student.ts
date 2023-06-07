@@ -3,8 +3,18 @@ import Student from "../../models/student";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../../models/user";
+import Faculty from "../../models/faculty";
+import { validationResult } from "express-validator";
 
 export const addStudent = async (req: Request, res: Response) => {
+  const err = validationResult(req);
+  if(!err.isEmpty()){
+    return res.status(400).json({
+      msg: "failureArray",
+      data: null,
+      error: err.array(),
+    });
+  }
   try {
     const data = req.body;
     let user = await User.findOne({
@@ -15,6 +25,16 @@ export const addStudent = async (req: Request, res: Response) => {
         msg: "failure",
         data: null,
         error: "user already exists, please login",
+      });
+    }
+    let faculty = await Faculty.findOne({
+      where:{id:req.body.student.FacultyId}
+    })
+    if (!faculty) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "Faculty Id is not correct",
       });
     }
     data.user.password = bcrypt.hashSync(data.user.password, 10);
