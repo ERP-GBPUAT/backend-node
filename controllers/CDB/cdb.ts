@@ -1,83 +1,100 @@
 import { Request, Response } from "express";
 import Complaint from "../../models/complaint";
+import CDBUser from "../../models/cdbuser";
 // temporary apis
 
+
+const validate = (regex : string,value : string)=>{
+    const reg = new RegExp(regex);
+    console.log("askjdhaskjdfhsdfjjksdfhsakjlj",reg.test(value));
+    return reg.test(value);
+}
+
 export const login = async(req:Request,res:Response)=>{
-    if(req.body.email === "student@gmail.com" && req.body.password === "student"){
-        return res.status(201).json({
-            message:"sucess",
-            data :{
-                name : "Nitin Rayal",
-                branch:"Information Technology",
-                reg_id:55079,
-                designation : "student",
-                level : 0
+    // if(req.body.email === "student@gmail.com" && req.body.password === "student"){
+    //     return res.status(201).json({
+    //         message:"sucess",
+    //         data :{
+    //             name : "Nitin Rayal",
+    //             branch:"Information Technology",
+    //             reg_id:55079,
+    //             designation : "student",
+    //             level : 0
+    //         }
+    //     })
+    // }
+    try{
+        const data = CDBUser.findOne({
+            where:{
+                email : req.body.email,
+                password : req.body.password
             }
-        })
-    }
-    else if(req.body.email === "assistantwarden@gmail.com" && req.body.password === "assistantwarden"){
+        }).then((data)=>{
+            console.log(data?.dataValues);
+            const temp = data?.dataValues;
+            var level;
+            if(temp.designation == "student")level = 0;
+            else if(temp.designation == "warden")level = 1;
+            else if(temp.designation == "Dean")level = 2;
+            else if(temp.designation == "CDB")level = 3;
             return res.status(201).json({
-                message:"sucess",
-                data :{
-                    name : "Dhruv prathabh",
-                    branch:"V.S bhawan",
-                    reg_id:99080,
-                    designation : "Assistant warden",
-                    level : 1
+                message : "sucess",
+                data : {
+                    name : temp.name,
+                    branch : temp.loc,
+                    reg_id : temp.reg_id,
+                    designation : temp.designation,
+                    level : level
                 }
             })
-        }
-    else if(req.body.email === "warden@gmail.com" && req.body.password === "warden"){
-        return res.status(201).json({
-            message:"sucess",
-            data :{
-                name : "Dr. Sunil Kumar",
-                branch:"V.S. Bhawan",
-                reg_id:878682,
-                designation : "Warden",
-                level : 2
-            }
+        }).catch((err)=>{
+            console.log(err);
+            res.status(400).json({
+                error : err
+            })
         })
-    } 
-    else if(req.body.email === "dean@gmail.com" && req.body.password === "dean"){
-        return res.status(201).json({
-            message:"sucess",
-            data :{
-                name : "Dr. Alaknanda Ashok",
-                branch:"College of technology",
-                reg_id:870000,
-                designation : "Dean & Chief Warden",
-                level : 3
-            }
-        })
+
     }
-    else return res.status(404).json({
-        message:"failed"
-    });
+    catch(err){
+        console.log(err);
+    }
 }
 //end here
 
 export const submit_complaint = async (req:Request,res : Response)=>{
-    try{
-      const data = await Complaint.create(req.body);
-    return res.status(201).json({
-        message:"Sucessfully inserted in DB",
-        data : data
-    });
+    if(
+    validate("^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$",req.body.name) &&
+    validate("^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$",req.body.complainee_name) &&
+    validate("^[A-Za-z0-9_-]*$",req.body.studentid) &&
+    validate("^[A-Za-z0-9_-]*$",req.body.room) &&
+    validate("^[7-9][0-9]{9}$",req.body.phone) &&
+    req.body.phone.length === 10
+    ){
+        try{
+            const data = await Complaint.create(req.body);
+          return res.status(201).json({
+              message:"sucess",
+              data : data
+          });
+          }
+          catch(err){
+          return res.status(500).json({
+                    msg: "failure",
+                    data: null,
+                    error: err,
+          });
+          }
     }
-    catch(err){
-    return res.status(500).json({
-              msg: "failure",
-              data: null,
-              error: err,
-    });
+    else {
+        return res.status(500).json({
+            msg: "failure",
+  });
     }
 }
 
 export const get_all_complaints = async (req:Request,res:Response)=>{
     try{
     const data = await Complaint.findAll();
-    console.log(data);
     res.status(201).json({
         message:"sucessfully fetched complaints",
         data : data
@@ -95,7 +112,6 @@ export const getComplaintbystatus_id= async(req:Request,res:Response)=>{
 
     const status = req.query.status;
     const reg_id = req.query.reg_id;
-    console.log(status);
     try{
       const data = await Complaint.findAll({
         where:{
@@ -344,5 +360,35 @@ export const reject_complaint = async (req:Request,res:Response)=>{
         data: null,
         error: err,
     });
+    }
+}
+
+
+export const signup = async (req:Request,res:Response)=>{
+    if(
+    validate("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-zA-z]{2,3}$",req.body.email) &&
+    validate("^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$",req.body.name) &&
+    validate("^[A-Za-z0-9_-]*$",req.body.reg_id) &&
+    validate("^[7-9][0-9]{9}$",req.body.phone) &&
+    req.body.phone.length === 10
+    ){
+        try{
+            console.log(req.body);
+            const data = await CDBUser.create(req.body);
+            res.status(201).json({
+            data : data,
+            message :"success"});
+        }
+        catch(err){
+            res.status(401).json({
+                message:"failure",
+                err : err
+            })
+        }
+    }
+    else {
+        res.status(401).json({
+            message:"failure",
+        })
     }
 }

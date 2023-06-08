@@ -11,7 +11,8 @@ import  {
     get_complaints_by_lvl,
     getStatsbyid,
     getStudentComplaintbyid,
-    getComplaintbystatus_id
+    getComplaintbystatus_id,
+    signup
     } from "../controllers/CDB/cdb";
     const Route = express.Router();
     
@@ -34,5 +35,6 @@ import  {
 
     //login apis
     Route.post("/login",login);
+    Route.post("/signup",signup);
     
 export default Route;

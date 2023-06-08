@@ -10,6 +10,7 @@ import { Semester,Course } from "./semester";
 import Subject from "./subject";
 import Complaint from "./complaint";
 import HostelComplaint from "./hostelcomplaint";
+import CDBUser from "./cdbuser";
 
 User.hasOne(Student);
 Student.belongsTo(User);
@@ -51,3 +52,4 @@ Course.sync();
 Subject.sync();
 Complaint.sync()
 HostelComplaint.sync();
+CDBUser.sync();
