@@ -16,12 +16,21 @@ class Research extends Model<
   declare id: CreationOptional<string>;
   declare researchType: string;
   declare journalISBNNo: string;
+  declare eISSNNo: string;
+  declare pISSNNo: string;
+  declare applicationNo: string;
+  declare sciImpactFactor: string;
   declare authorsName: string;
   declare researchTitle: string;
   declare journalName: string;
-  declare publishedYear: number;
+  declare conferenceName: string;
+  declare bookName: string;
+  declare publishedYear: string;
+  declare editionOfBook:number;
   declare volNo: number;
-  declare pageNo: number;
+  declare issueNo:string;
+  declare totalPageNo:string;
+  declare pageNo: string;
   declare researchLink: string;
   declare FacultyId: ForeignKey<Faculty["id"]>;
 }
@@ -39,12 +48,25 @@ Research.init(
     },
     journalISBNNo: {
       type: DataTypes.STRING,
-      allowNull: false,
       unique: true,
+    },
+    eISSNNo:{
+      type:DataTypes.STRING,
+      unique:true,
+    },
+    pISSNNo:{
+      type:DataTypes.STRING,
+      unique:true
+    },
+    applicationNo:{
+      type:DataTypes.STRING,
+      unique:true
+    },
+    sciImpactFactor:{
+      type:DataTypes.STRING,
     },
     authorsName: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     researchTitle: {
       type: DataTypes.STRING,
@@ -52,19 +74,31 @@ Research.init(
     },
     journalName: {
       type: DataTypes.STRING,
-      allowNull: false,
+    },
+    conferenceName: {
+      type: DataTypes.STRING,
+    },
+    bookName: {
+      type: DataTypes.STRING,
     },
     publishedYear: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.STRING,
       allowNull: false,
+    },
+    editionOfBook:{
+      type:DataTypes.NUMBER,
     },
     volNo: {
       type: DataTypes.NUMBER,
-      allowNull: false,
+    },
+    issueNo:{
+      type:DataTypes.STRING,
+    },
+    totalPageNo:{
+      type:DataTypes.NUMBER,
     },
     pageNo: {
-      type: DataTypes.NUMBER,
-      allowNull: false,
+      type: DataTypes.STRING,
     },
     researchLink: {
       type: DataTypes.STRING,

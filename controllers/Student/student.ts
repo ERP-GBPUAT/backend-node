@@ -77,7 +77,8 @@ export const getStudent = async (req: Request, res: Response) => {
       if (!studentId) {
         studentId = res.locals.user.student.id
       }
-      if (studentId !== res.locals.user.student.id){
+      
+      if (studentId != res.locals.user.student.id){
         return res.status(400).json({
           msg: "failure",
           data: null,
@@ -86,18 +87,27 @@ export const getStudent = async (req: Request, res: Response) => {
       }
     }
     let student = await Student.findOne({
-      include: User,
       where: { id: studentId },
+      include: User,
     });
     if (!student) {
       return res.status(404).json({
         msg: "failure",
         data: null,
-        error: "student not found",
+        error: "Student details not found",
       });
     }
-    if (isStaff === true) {
-      if (res.locals.user.staff.isAdmin === true) {
+    if (isStudent && studentId == res.locals.user.student.id){
+      return res.status(400).json({
+        msg: "success",
+        data: student,
+        error: null
+      })
+    }
+    if (isStaff) {
+      console.log("admin");
+      
+      if (res.locals.user.staff.isAdmin) {
         return res.status(200).json({
           msg: "success",
           data: student,
@@ -106,7 +116,7 @@ export const getStudent = async (req: Request, res: Response) => {
       }
     }
     if (isFaculty === true) {
-      if (res.locals.user.faculty.id === student.FacultyId) {
+      if (res.locals.user.faculty.id == student.FacultyId) {
         return res.status(200).json({
           msg: "success",
           data: student,
