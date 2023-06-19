@@ -244,12 +244,12 @@ export const getAllNoDues = async (req: Request, res: Response) => {
       )
     ) {
       return res.status(400).json({
-        msg: "success",
+        msg: "failure",
         data: null,
         error: "access denied",
       });
     }
-    let applications = await NoDues.findAll();
+    let applications = await NoDues.findAll({include:{model:Student,include:[{model:User}]}});
     return res.status(200).json({
       msg: "success",
       data: applications,
@@ -257,9 +257,9 @@ export const getAllNoDues = async (req: Request, res: Response) => {
     });
   } catch (e) {
     return res.status(500).json({
-      msg: "success",
+      msg: "failure",
       data: null,
-      error: e,
+      error: "Internal server error",
     });
   }
 };

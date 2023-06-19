@@ -64,16 +64,25 @@ export const getAllResearch = async (req: Request, res: Response) => {
     const researches = await Research.findAll({
       include:[{model:Faculty,include:[{model:User}]}]
     });
+    if(!researches.length){
+      return res.status(404).json({
+        msg: "failure",
+        data: null,
+        error: "NO Research Found",
+      });
+    }
     return res.status(200).json({
       msg: "success",
       data: researches,
       error: null,
     });
   } catch (e) {
+    console.log(e);
+    
     return res.status(500).json({
-      msg: "failed",
+      msg: "failure",
       data: null,
-      error: e,
+      error: "Error 500 Internal Server Error! Please try after some time",
     });
   }
 };
