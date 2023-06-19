@@ -79,3 +79,35 @@ export const getSemester = async (req: Request, res: Response) => {
     })
   }
 }
+
+export const getPrevSemester = async (req: Request, res: Response) => {
+  try {
+    if (!res.locals.user.user.isFaculty) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied"
+      })
+    }
+    let faculty = await Faculty.findByPk(res.locals.user.faculty.id);
+    if (!faculty) {
+      return res.status(400).json({
+        msg: "failure",
+        data: null,
+        error: "access denied"
+      })
+    }
+    let semester = faculty.semesters.slice(-2)[0]
+    return res.status(200).json({
+      msg: "success",
+      data: semester,
+      error: null
+    })
+  } catch (e) {
+    return res.status(500).json({
+      msg: "failure",
+      data: null,
+      error: "Internal server error"
+    })
+  }
+}
