@@ -3,7 +3,6 @@ import {
   DataTypes,
   InferAttributes,
   InferCreationAttributes,
-  CreationOptional,
   ForeignKey,
   NonAttribute,
 } from "sequelize";

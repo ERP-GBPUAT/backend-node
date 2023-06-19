@@ -1,50 +1,44 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, ForeignKey, BelongsToMany, NonAttribute } from "sequelize";
+import {
+  Model,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  NonAttribute,
+  ForeignKey
+} from "sequelize";
 
 import sequelize from "./indexModel";
 import Subject from "./subject";
+import Faculty from "./faculty"
 
-export class Semester extends Model<InferAttributes<Semester>, InferCreationAttributes<Semester>> {
-    declare name: string;
-    declare year: string;
-    declare number: number;
-    declare cousres: NonAttribute<Course[]>;
-    declare cgpa: number
+export class Semester extends Model<
+  InferAttributes<Semester>,
+  InferCreationAttributes<Semester>
+> {
+  declare id: string;
+  declare session: string;
+  declare number: number;
+  declare subjects: NonAttribute<Subject[]>;
+  declare FacultyId: ForeignKey<Faculty["id"]>;
 }
 
 Semester.init(
-    {
-        name: {
-            type: DataTypes.STRING,
-            unique: true,
-            primaryKey: true,
-        },
-        year: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        number: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        cgpa: {
-            type: DataTypes.NUMBER,
-            defaultValue:0,
-        }
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
     },
-    { sequelize }
+    number: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    session: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    }
+  },
+  { sequelize }
 );
 
-export class Course extends Model<InferAttributes<Course>, InferCreationAttributes<Course>> {
-    declare SubjectId: ForeignKey<Subject["code"]>;
-    declare marks: number;
-}
-
-Course.init(
-    {
-        marks:{
-            type:DataTypes.NUMBER,
-            defaultValue:0,
-        }
-    },
-    {sequelize}
-)
+export default Semester;

@@ -5,7 +5,7 @@ import StudentLeave from "./studentLeave";
 import FacultyLeave from "./facultyLeave";
 import Research from "./facultyResearch";
 import Inventory from "./inventory";
-import { Semester,Course } from "./semester";
+import Semester from "./semester";
 import Subject from "./subject";
 import NoDues from "./nodues";
 import Staff from "./staff";
@@ -33,14 +33,8 @@ Student.belongsTo(Faculty);
 Faculty.hasMany(FacultyLeave);
 FacultyLeave.belongsTo(Faculty);
 
-Student.hasMany(Semester);
-Semester.belongsTo(Student);
-
-Semester.hasMany(Course);
-Course.belongsTo(Semester);
-
-Subject.belongsTo(Course)
-Course.hasOne(Subject);
+Semester.hasMany(Subject);
+Subject.belongsTo(Semester);
 
 Student.hasOne(NoDues);
 NoDues.belongsTo(Student);
@@ -56,7 +50,6 @@ FacultyLeave.sync()
 Research.sync()
 Inventory.sync();
 Semester.sync();
-Course.sync();
 Subject.sync();
 NoDues.sync()
 Staff.sync()
