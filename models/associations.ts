@@ -33,8 +33,11 @@ Student.belongsTo(Faculty);
 Faculty.hasMany(FacultyLeave);
 FacultyLeave.belongsTo(Faculty);
 
-Semester.hasMany(Subject);
-Subject.belongsTo(Semester);
+Faculty.hasMany(Semester)
+Semester.belongsTo(Faculty)
+
+// Semester.hasMany(Subject);
+// Subject.belongsToMany(Semester)
 
 Student.hasOne(NoDues);
 NoDues.belongsTo(Student);

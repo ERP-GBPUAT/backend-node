@@ -1,11 +1,19 @@
 import { Request, Response } from "express";
 import Notice from "../../models/notices";
 import path from "path";
+import { validationResult } from "express-validator";
 
 export const addNotice = async (req: Request, res: Response) => {
     const noticeBody = JSON.parse(req.body.data)
     let file = req.file
-
+    // const errors = validationResult(req);
+    // if(!errors.isEmpty()){
+    //     return res.status(200).json({
+    //         msg: "failureArr",
+    //         data: null,
+    //         error: errors.array(),
+    //     });
+    // }
     try {
         if (res.locals.user?.staff?.isAdmin) {
             let notice = await Notice.create({
@@ -16,6 +24,13 @@ export const addNotice = async (req: Request, res: Response) => {
                 msg: "success",
                 data: notice,
                 error: null,
+            });
+        }
+        else{
+            return res.status(400).json({
+                msg: "failure",
+                data: null,
+                error: "access denied",
             });
         }
     } catch (error) {

@@ -3,7 +3,8 @@ import { addResearch, getFacultyResearch, getAllResearch, getResearch } from '..
 import authentication from '../middleware/authentication';
 
 const router = express.Router();
-router.post('/addResearch',authentication, addResearch)
+router.post('/addResearch',[
+],authentication, addResearch)
 router.get('/getFacultyResearch/:facultyId', getFacultyResearch)
 router.get('/getAllResearch', getAllResearch)
 router.post('/getResearch', getResearch)

@@ -26,7 +26,7 @@ router.post("/register",[
     body("user.gender").trim().notEmpty().withMessage("Gender cannot be empty"),
     body("user.address").trim().notEmpty().withMessage("Address cannot be empty"),
     body("staff.id").trim().notEmpty().withMessage("Student id cannot be empty").isAlpha().withMessage("Staff id cannot contain numeric values").trim().isLength({ min: 5, max: 6 }).withMessage("Staff Id length should be between 5 and 6"),
-    body("staff.role", "Invalid Staff role").trim().notEmpty().withMessage("Father name cannot be empty")
+    // body("staff.role", "Invalid Staff role").trim().notEmpty().withMessage("Staff role cannot be empty")
     ], addStaff)
 
 export default router

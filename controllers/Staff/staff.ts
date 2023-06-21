@@ -3,8 +3,17 @@ import User from "../../models/user";
 import Staff from "../../models/staff";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { validationResult } from "express-validator";
 
 export const addStaff = async (req: Request, res: Response) => {
+  const err = validationResult(req);
+  if(!err.isEmpty()){
+    return res.status(400).json({
+      msg: "failureArray",
+      data: null,
+      error: err.array(),
+    });
+  }
   try {
     const data = req.body;
     let user = await User.findOne({
