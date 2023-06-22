@@ -79,7 +79,7 @@ export const submit_complaint = async (req:Request,res : Response)=>{
           }
           catch(err){
           return res.status(500).json({
-                    msg: "failure",
+                    message: "failure",
                     data: null,
                     error: err,
           });
